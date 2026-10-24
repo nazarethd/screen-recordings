@@ -149,6 +149,7 @@
   try {
     var key = await crypto.subtle.importKey('raw', b64(k), 'AES-GCM', false, ['decrypt']);
     var meta = JSON.parse(new TextDecoder().decode(await decryptBlob(key, b64(info.meta))));
+    if (meta.exp && Date.now() >= meta.exp) return fail('Срок действия этой ссылки истёк, видео удалено.');
     msg.textContent = 'Загружаем и расшифровываем видео…';
     bar.hidden = false;
     var encrypted = await download('v/' + id + '.bin');
